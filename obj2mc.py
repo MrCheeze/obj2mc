@@ -1,8 +1,12 @@
 import sys
 import re
 
-if len(sys.argv) != 2:
-    print('usage: python obj2mc.py myobject.obj')
+if len(sys.argv) == 2:
+    growthfactor = 1.0
+elif len(sys.argv) == 3:
+    growthfactor = float(sys.argv[2])
+else:
+    print('usage: python obj2mc.py myobject.obj [growthfactor]')
     sys.exit(1)
 
 obj = open(sys.argv[1])
@@ -12,6 +16,7 @@ json = open(sys.argv[1] + '.json', 'w')
 coordinates = ['0.0,0.0,0.0']
 slashremover = r'([0-9\.\-]*)/[0-9\.\-]*/[0-9\.\-]*'
 firstline = True #used to make sure the final face has no comma at the end
+offset = 0.5 #makes the center of the block the origin, not the corner
 
 json.write('''{
 \t"name": "steak_styles",
@@ -21,7 +26,12 @@ json.write('''{
 for line in obj:
     splitline = line.strip().split()
     if splitline and splitline[0] == 'v':
-        coord_string = splitline[1]+','+splitline[2]+','+splitline[3]
+        coords = [float(splitline[1]), float(splitline[2]),
+                  float(splitline[3])]
+        for i in range(3):
+            coords[i] = (coords[i] * growthfactor) + offset
+            coords[i] = round(coords[i], 10)
+        coord_string = ','.join(str(coord) for coord in coords)
         coordinates.append(coord_string)
     if splitline and splitline[0] == 'f':
         for i in range(1, 4):
