@@ -14,7 +14,7 @@ json = open(sys.argv[1] + '.json', 'w')
 
 #start with dummy coordinates because obj is one-indexed
 coordinates = ['0.0,0.0,0.0']
-slashremover = r'([0-9\.\-]*)/[0-9\.\-]*/[0-9\.\-]*'
+slashremover = r'([0-9\.\-]*)/[0-9\.\-]*(/[0-9\.\-]*)?'
 firstline = True #used to make sure the final face has no comma at the end
 offset = 0.5 #makes the center of the block the origin, not the corner
 
